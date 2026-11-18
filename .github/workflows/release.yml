@@ -42,10 +42,11 @@ jobs:
       - name: Cache Rust build artifacts
         uses: Swatinem/rust-cache@v2
 
-      # The desktop shell needs WebKitGTK system packages; it is compiled by
-      # every platform build below, so verify only tests the shared crates.
+      # The desktop shell (WebKitGTK) and platform-linux (gio/GLib) need system
+      # packages; both are compiled by the platform builds below, so verify
+      # only tests the crates that build without native libraries.
       - name: Test
-        run: cargo test --locked --workspace --exclude link-helm-desktop
+        run: cargo test --locked --workspace --exclude link-helm-desktop --exclude platform-linux
 
   build:
     needs: verify
