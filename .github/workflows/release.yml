@@ -57,12 +57,14 @@ jobs:
           - platform: linux
             runs_on: ubuntu-24.04
             bundles: deb,appimage
-          - platform: macos-intel
+          # One Universal (x86_64 + arm64) DMG, built on the Intel runner:
+          # hosted arm64 macOS runners repeatedly failed to start for lack
+          # of capacity.
+          - platform: macos-universal
             runs_on: macos-15-intel
             bundles: dmg
-          - platform: macos-apple-silicon
-            runs_on: macos-15
-            bundles: dmg
+            rust_targets: x86_64-apple-darwin,aarch64-apple-darwin
+            build_args: --target universal-apple-darwin
           - platform: windows
             runs_on: windows-2022
             bundles: nsis
@@ -93,6 +95,8 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_targets }}
 
       - name: Cache Tauri CLI
         id: tauri-cli-cache
@@ -113,7 +117,7 @@ jobs:
 
       - name: Build package
         working-directory: apps/desktop
-        run: cargo tauri build --bundles ${{ matrix.bundles }} --no-sign -- --locked
+        run: cargo tauri build --bundles ${{ matrix.bundles }} --no-sign ${{ matrix.build_args }} -- --locked
 
       - name: Install appimagetool
         if: matrix.platform == 'linux'
@@ -143,15 +147,13 @@ jobs:
               ./scripts/repair-appimage-permissions.sh "$appimage" "$out/Link-Helm_amd64.AppImage"
               cp "$deb" "$out/Link-Helm_Linux_amd64.deb"
               ;;
-            macos-intel)
-              dmg=$(find target/release/bundle/dmg -maxdepth 1 -type f -name '*.dmg' -print -quit)
+            macos-universal)
+              dmg=$(find target/universal-apple-darwin/release/bundle/dmg -maxdepth 1 -type f -name '*.dmg' -print -quit)
               test -n "$dmg"
-              cp "$dmg" "$out/Link-Helm_macOS_Intel.dmg"
-              ;;
-            macos-apple-silicon)
-              dmg=$(find target/release/bundle/dmg -maxdepth 1 -type f -name '*.dmg' -print -quit)
-              test -n "$dmg"
+              # Same Universal DMG under both existing download names so the
+              # README/site links keep working.
               cp "$dmg" "$out/Link-Helm_macOS_Apple-Silicon.dmg"
+              cp "$dmg" "$out/Link-Helm_macOS_Intel.dmg"
               ;;
             windows)
               installer=$(find target/release/bundle/nsis -maxdepth 1 -type f -name '*.exe' -print -quit)
