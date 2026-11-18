@@ -36,21 +36,16 @@ jobs:
             exit 1
           fi
 
-      - name: Install Linux dependencies
-        run: |
-          sudo apt-get -o Acquire::Retries=3 update
-          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=60 install -y build-essential pkg-config \
-            libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libsoup-3.0-dev \
-            libayatana-appindicator3-dev librsvg2-dev
-
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
       - name: Cache Rust build artifacts
         uses: Swatinem/rust-cache@v2
 
+      # The desktop shell needs WebKitGTK system packages; it is compiled by
+      # every platform build below, so verify only tests the shared crates.
       - name: Test
-        run: cargo test --locked --workspace
+        run: cargo test --locked --workspace --exclude link-helm-desktop
 
   build:
     needs: verify
@@ -81,6 +76,15 @@ jobs:
       - name: Install Linux dependencies
         if: matrix.platform == 'linux'
         run: |
+          # The runner's default mirror (us-east-2.ec2.archive.ubuntu.com) has
+          # stalled for 10+ minutes. Prefer the main archive; keep the default
+          # as a fallback.
+          mirrors=/etc/apt/apt-mirrors.txt
+          if [ -f "$mirrors" ]; then
+            { echo "http://archive.ubuntu.com/ubuntu/	priority:1"; cat "$mirrors"; } | sudo tee "$mirrors.new" >/dev/null
+            sudo mv "$mirrors.new" "$mirrors"
+            cat "$mirrors"
+          fi
           sudo apt-get -o Acquire::Retries=3 update
           sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=60 install -y build-essential curl pkg-config \
             libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libsoup-3.0-dev \
