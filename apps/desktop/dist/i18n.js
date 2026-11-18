@@ -1,12 +1,12 @@
 (function () {
   const DEFAULT_LOCALE = "en";
-  const SUPPORTED_LOCALES = new Set(["en", "zh-CN"]);
+  const SUPPORTED_LOCALES = new Set(["en"]);
   let locale = DEFAULT_LOCALE;
   let messages = {};
 
   function normalizeLocale(value) {
     if (SUPPORTED_LOCALES.has(value)) return value;
-    return String(value || "").toLowerCase().startsWith("zh") ? "zh-CN" : DEFAULT_LOCALE;
+    return DEFAULT_LOCALE;
   }
 
   function interpolate(template, values = {}) {

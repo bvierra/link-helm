@@ -7,22 +7,18 @@ pub enum AppLocale {
     #[default]
     #[serde(rename = "en")]
     English,
-    #[serde(rename = "zh-CN")]
-    SimplifiedChinese,
 }
 
 impl AppLocale {
     pub const fn settings_title(self) -> &'static str {
         match self {
             Self::English => "Link Helm Settings",
-            Self::SimplifiedChinese => "Link Helm 设置",
         }
     }
 
     pub const fn selector_title(self) -> &'static str {
         match self {
             Self::English => "Choose a browser profile",
-            Self::SimplifiedChinese => "选择浏览器身份",
         }
     }
 
@@ -34,13 +30,6 @@ impl AppLocale {
                 pause: "Pause Routing",
                 rescan: "Rescan Profiles",
                 quit: "Quit Link Helm",
-            },
-            Self::SimplifiedChinese => TrayLabels {
-                open_settings: "打开设置...",
-                ask_next: "下次询问",
-                pause: "暂停路由",
-                rescan: "重新扫描身份",
-                quit: "退出 Link Helm",
             },
         }
     }
@@ -96,4 +85,21 @@ impl PreferencesStore {
 
 fn temporary_path(path: &Path) -> PathBuf {
     path.with_extension("tmp")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_previously_saved_removed_locale_falls_back_to_english() {
+        let dir = std::env::temp_dir().join("link-helm-removed-locale-preferences");
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("preferences.json");
+        std::fs::write(&path, r#"{"locale":"zh-CN"}"#).unwrap();
+
+        assert_eq!(PreferencesStore::load(&path).locale(), AppLocale::English);
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 }
