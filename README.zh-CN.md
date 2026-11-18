@@ -1,6 +1,6 @@
 # Link Helm
 
-[English](README.md) | 简体中文
+[English](README.md) | 简体中文 | [网站](https://bvierra.github.io/link-helm/)
 
 Link Helm 是一款面向 macOS、Windows 和 Linux 的浏览器身份路由工具。它接收系统中的 HTTP/HTTPS 链接，根据来源应用、域名和自定义规则，将链接发送到指定浏览器及对应的 Profile，避免工作账号、个人账号和不同使用场景混在同一个浏览器身份中。
 
@@ -12,6 +12,26 @@ Link Helm 是一款面向 macOS、Windows 和 Linux 的浏览器身份路由工�
 - 暂停自动路由，或只让下一个链接打开身份选择器。
 
 Link Helm 使用 Rust 和 Tauri 2 构建，面向 macOS 13 及以上版本、Windows 10/11 x64，以及遵循 XDG 规范的 Linux 桌面。
+
+> 本仓库是 [ryanfan219/link-helm](https://github.com/ryanfan219/link-helm) 的维护分支；原仓库已停止更新并不再发布安装包。应用名称和标识符（`com.yzbb.linkhelm`）保持不变，已有安装会保留设置。
+
+## 下载
+
+从 [GitHub Releases](https://github.com/bvierra/link-helm/releases/latest) 获取最新安装包：
+
+| 平台 | 安装包 |
+| --- | --- |
+| Windows 10/11 x64 | [Link-Helm_Windows_x64-setup.exe](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_Windows_x64-setup.exe) |
+| macOS（Apple Silicon） | [Link-Helm_macOS_Apple-Silicon.dmg](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_macOS_Apple-Silicon.dmg) |
+| macOS（Intel） | [Link-Helm_macOS_Intel.dmg](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_macOS_Intel.dmg) |
+| Debian / Ubuntu | [Link-Helm_Linux_amd64.deb](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_Linux_amd64.deb) |
+| Linux AppImage | [Link-Helm_amd64.AppImage](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_amd64.AppImage) |
+
+安装包未经代码签名，首次启动时系统会提示：
+
+- **Windows：** SmartScreen 显示“Windows 已保护你的电脑”，选择 **更多信息 → 仍要运行**。
+- **macOS：** 右键点击应用并选择 **打开**，或运行 `xattr -dr com.apple.quarantine "/Applications/Link Helm.app"`。
+- **AppImage：** 运行 `chmod +x Link-Helm_amd64.AppImage` 赋予执行权限。
 
 ## 兼容性状态
 
@@ -82,7 +102,7 @@ cargo install tauri-cli --version "^2.0" --locked
 克隆仓库：
 
 ```bash
-git clone https://github.com/ryanfan219/link-helm.git
+git clone https://github.com/bvierra/link-helm.git
 cd link-helm
 ```
 

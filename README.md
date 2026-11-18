@@ -1,6 +1,6 @@
 # Link Helm
 
-English | [简体中文](README.zh-CN.md) | [Website](https://ryanfan219.github.io/link-helm/)
+English | [简体中文](README.zh-CN.md) | [Website](https://bvierra.github.io/link-helm/)
 
 Link Helm is a browser identity router for macOS, Windows, and Linux. It receives HTTP and HTTPS links from the system and routes them to a specific browser Profile according to the source application, domain, and your rules. This keeps work accounts, personal accounts, and other browsing contexts separated.
 
@@ -12,6 +12,28 @@ For example, Link Helm can:
 - Pause automatic routing or show the identity selector for only the next link.
 
 Link Helm is built with Rust and Tauri 2 and targets macOS 13 or later, Windows 10/11 x64, and Linux desktops using XDG conventions.
+
+> This is the maintained fork of [ryanfan219/link-helm](https://github.com/ryanfan219/link-helm), which is no longer updated and no longer publishes releases. Existing installs keep their settings: the app name and identifier (`com.yzbb.linkhelm`) are unchanged.
+
+## Download
+
+Get the latest packages from [GitHub Releases](https://github.com/bvierra/link-helm/releases/latest):
+
+| Platform | Package |
+| --- | --- |
+| Windows 10/11 x64 | [Link-Helm_Windows_x64-setup.exe](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_Windows_x64-setup.exe) |
+| macOS (Apple Silicon) | [Link-Helm_macOS_Apple-Silicon.dmg](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_macOS_Apple-Silicon.dmg) |
+| macOS (Intel) | [Link-Helm_macOS_Intel.dmg](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_macOS_Intel.dmg) |
+| Debian / Ubuntu | [Link-Helm_Linux_amd64.deb](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_Linux_amd64.deb) |
+| Linux AppImage | [Link-Helm_amd64.AppImage](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_amd64.AppImage) |
+
+The packages are not code-signed, so the OS warns on first launch:
+
+- **Windows:** SmartScreen shows "Windows protected your PC". Choose **More info → Run anyway**.
+- **macOS:** Gatekeeper blocks the app. Open it once with right-click → **Open**, or run `xattr -dr com.apple.quarantine "/Applications/Link Helm.app"`.
+- **AppImage:** mark it executable with `chmod +x Link-Helm_amd64.AppImage`.
+
+To build from source instead, follow the sections below.
 
 ## Compatibility Status
 
@@ -82,7 +104,7 @@ The interface uses static HTML, CSS, and JavaScript stored in the repository. No
 Clone the repository:
 
 ```bash
-git clone https://github.com/ryanfan219/link-helm.git
+git clone https://github.com/bvierra/link-helm.git
 cd link-helm
 ```
 
