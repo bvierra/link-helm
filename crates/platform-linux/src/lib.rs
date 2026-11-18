@@ -117,6 +117,10 @@ impl LinuxPlatformAdapter {
         process_browser_id(pid).map(|browser_id| browser_id.as_str().to_string())
     }
 
+    pub fn frontmost_browser_id(&self) -> Option<BrowserId> {
+        self.frontmost_application_bundle_id().map(BrowserId::new)
+    }
+
     pub fn running_supported_browser_ids(&self) -> Vec<BrowserId> {
         let mut seen = HashSet::new();
         let mut result = Vec::new();

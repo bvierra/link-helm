@@ -208,24 +208,22 @@ impl DesktopService {
 
     fn seed_running_browser_identities(&mut self) {
         self.refresh_running_browser_sessions();
-        self.seed_frontmost_browser_identity(self.platform.frontmost_application_bundle_id());
+        self.seed_frontmost_browser_identity(self.platform.frontmost_browser_id());
     }
 
-    fn seed_frontmost_browser_identity(&mut self, bundle_id: Option<String>) {
-        let Some(bundle_id) = bundle_id else {
+    fn seed_frontmost_browser_identity(&mut self, browser_id: Option<BrowserId>) {
+        let Some(browser_id) = browser_id else {
             return;
         };
-        let browser_id = BrowserId::new(bundle_id);
         if self.platform.browser_executable(&browser_id).is_some() {
             self.record_current_browser_identity(browser_id);
         }
     }
 
     pub fn observe_foreground_browser(&mut self) {
-        let Some(bundle_id) = self.platform.frontmost_application_bundle_id() else {
+        let Some(browser_id) = self.platform.frontmost_browser_id() else {
             return;
         };
-        let browser_id = BrowserId::new(bundle_id);
         if self.platform.browser_executable(&browser_id).is_some() {
             self.refresh_running_browser_sessions();
             self.record_current_browser_identity(browser_id);
@@ -617,7 +615,7 @@ mod tests {
             ProfileId::new("Profile 1"),
         );
 
-        service.seed_frontmost_browser_identity(Some("com.alibaba.DingTalkMac".to_string()));
+        service.seed_frontmost_browser_identity(Some(BrowserId::new("com.alibaba.DingTalkMac")));
 
         assert!(service
             .runtime_snapshot()

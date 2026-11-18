@@ -97,6 +97,16 @@ impl WindowsPlatformAdapter {
         foreground_process_name()
     }
 
+    /// Browser id of the foreground window's process, if it is a supported
+    /// browser. `frontmost_application_bundle_id` returns the raw executable
+    /// name (e.g. `chrome.exe`) for source-app matching; browser identity
+    /// tracking needs the canonical browser id instead.
+    pub fn frontmost_browser_id(&self) -> Option<BrowserId> {
+        foreground_process_name()
+            .as_deref()
+            .and_then(browser_id_for_process)
+    }
+
     pub fn running_supported_browser_ids(&self) -> Vec<BrowserId> {
         let mut seen = HashSet::new();
         running_process_names()
@@ -535,4 +545,29 @@ fn shell_open(target: &str, context: &str) -> Result<(), PlatformError> {
 
 fn wide(value: &str) -> Vec<u16> {
     OsStr::new(value).encode_wide().chain(Some(0)).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn foreground_browser_processes_map_to_launchable_browser_ids() {
+        for process in ["chrome.exe", "msedge.exe", "brave.exe", "firefox.exe"] {
+            let browser_id = browser_id_for_process(process).expect(process);
+            assert!(
+                !browser_executable_candidates(&browser_id).is_empty(),
+                "{process} must map to a browser id with executable candidates"
+            );
+        }
+    }
+
+    #[test]
+    fn raw_process_names_are_not_browser_ids() {
+        // The desktop shell only records browser identity when the id has an
+        // executable; a raw process name never does, which is why the
+        // foreground browser must be mapped before use.
+        assert!(browser_executable_candidates(&BrowserId::new("chrome.exe")).is_empty());
+        assert_eq!(browser_id_for_process("slack.exe"), None);
+    }
 }

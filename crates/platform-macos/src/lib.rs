@@ -275,6 +275,11 @@ impl MacOsPlatformAdapter {
         None
     }
 
+    /// On macOS the frontmost bundle id already is the browser id.
+    pub fn frontmost_browser_id(&self) -> Option<BrowserId> {
+        self.frontmost_application_bundle_id().map(BrowserId::new)
+    }
+
     pub fn running_supported_browser_ids(&self) -> Vec<BrowserId> {
         #[cfg(target_os = "macos")]
         {
