@@ -33,6 +33,9 @@ chmod a+rx "$appdir/AppRun"
 if [[ -d "$appdir/usr/bin" ]]; then
   find "$appdir/usr/bin" -type f -exec chmod a+rx {} +
 fi
+# appimagetool rejects AppDirs whose directories are not world-readable
+# (extraction leaves them 0700), so open read/traverse access tree-wide.
+chmod -R a+rX "$appdir"
 
 appimagetool=${APPIMAGETOOL:-appimagetool}
 "$appimagetool" "$appdir" "$output"
