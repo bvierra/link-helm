@@ -1,6 +1,6 @@
 # Link Helm
 
-English | [简体中文](README.zh-CN.md) | [Website](https://ryanfan219.github.io/link-helm/)
+[Website](https://bvierra.github.io/link-helm/)
 
 Link Helm is a browser identity router for macOS, Windows, and Linux. It receives HTTP and HTTPS links from the system and routes them to a specific browser Profile according to the source application, domain, and your rules. This keeps work accounts, personal accounts, and other browsing contexts separated.
 
@@ -12,6 +12,28 @@ For example, Link Helm can:
 - Pause automatic routing or show the identity selector for only the next link.
 
 Link Helm is built with Rust and Tauri 2 and targets macOS 13 or later, Windows 10/11 x64, and Linux desktops using XDG conventions.
+
+> This is the maintained fork of [ryanfan219/link-helm](https://github.com/ryanfan219/link-helm), which is no longer updated and no longer publishes releases. Existing installs keep their settings: the app name and identifier (`com.yzbb.linkhelm`) are unchanged.
+
+## Download
+
+Get the latest packages from [GitHub Releases](https://github.com/bvierra/link-helm/releases/latest):
+
+| Platform | Package |
+| --- | --- |
+| Windows 10/11 x64 | [Link-Helm_Windows_x64-setup.exe](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_Windows_x64-setup.exe) |
+| macOS (Apple Silicon) | [Link-Helm_macOS_Apple-Silicon.dmg](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_macOS_Apple-Silicon.dmg) |
+| macOS (Intel) | [Link-Helm_macOS_Intel.dmg](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_macOS_Intel.dmg) |
+| Debian / Ubuntu | [Link-Helm_Linux_amd64.deb](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_Linux_amd64.deb) |
+| Linux AppImage | [Link-Helm_amd64.AppImage](https://github.com/bvierra/link-helm/releases/latest/download/Link-Helm_amd64.AppImage) |
+
+The packages are not code-signed, so the OS warns on first launch:
+
+- **Windows:** SmartScreen shows "Windows protected your PC". Choose **More info → Run anyway**.
+- **macOS:** Gatekeeper blocks the app. Open it once with right-click → **Open**, or run `xattr -dr com.apple.quarantine "/Applications/Link Helm.app"`.
+- **AppImage:** mark it executable with `chmod +x Link-Helm_amd64.AppImage`.
+
+To build from source instead, follow the sections below.
 
 ## Compatibility Status
 
@@ -35,7 +57,6 @@ Link Helm is built with Rust and Tauri 2 and targets macOS 13 or later, Windows 
 - Provide a menu bar or system tray controller, settings window, and keyboard-accessible identity selector.
 - Preview rules, test Profile opening, and import or export configuration.
 - Retain only domains and stable identifiers in diagnostics; URL paths, query values, and fragments are not persisted.
-- Provide English and Simplified Chinese interfaces with a persistent language preference.
 
 ## Prerequisites
 
@@ -82,7 +103,7 @@ The interface uses static HTML, CSS, and JavaScript stored in the repository. No
 Clone the repository:
 
 ```bash
-git clone https://github.com/ryanfan219/link-helm.git
+git clone https://github.com/bvierra/link-helm.git
 cd link-helm
 ```
 
@@ -106,7 +127,7 @@ Run the development build from the repository root:
 cargo run -p link-helm-desktop
 ```
 
-On macOS and Windows, Link Helm starts in the background and remains in the menu bar or system tray. Click the Link Helm icon, then select **Open Settings...** or **打开设置...**. On Linux, a normal launch opens the settings window and also provides a system tray entry when the desktop supports one.
+On macOS and Windows, Link Helm starts in the background and remains in the menu bar or system tray. Click the Link Helm icon, then select **Open Settings...**. On Linux, a normal launch opens the settings window and also provides a system tray entry when the desktop supports one.
 
 After all dependencies have been downloaded, you can also run offline:
 
@@ -195,10 +216,10 @@ Ubuntu 22.04 may provide `libwebkit2gtk-4.0-dev` instead of `libwebkit2gtk-4.1-d
 ## First-Time Setup
 
 1. Open Link Helm settings from its menu bar or system tray icon.
-2. Rescan browser Profiles under **Browsers & Profiles / 浏览器与身份**.
-3. Create a rule under **Rules / 规则**, selecting a source application, an optional domain, and a target Profile.
+2. Rescan browser Profiles under **Browsers & Profiles**.
+3. Create a rule under **Rules**, selecting a source application, an optional domain, and a target Profile.
 4. Preview the rule, then use the Profile test on the General page to verify the target browser.
-5. To receive all external web links, click **Set as Default / 设为默认**. On macOS, complete authorization or select Link Helm under **System Settings > Desktop & Dock > Default web browser**. On Windows, select Link Helm for both HTTP and HTTPS in the Default Apps page that opens. On Linux, use the opened default-app settings or your desktop's **Default Applications** page to choose Link Helm for web links.
+5. To receive all external web links, click **Set as Default**. On macOS, complete authorization or select Link Helm under **System Settings > Desktop & Dock > Default web browser**. On Windows, select Link Helm for both HTTP and HTTPS in the Default Apps page that opens. On Linux, use the opened default-app settings or your desktop's **Default Applications** page to choose Link Helm for web links.
 
 Link Helm changes the default browser only after you explicitly request it and complete the operating system confirmation. Windows and some Linux desktops do not allow applications to force this choice. You can restore the previous browser from the same system setting after testing.
 
@@ -286,7 +307,7 @@ The `--offline` option can use only crates already cached on the machine. Run `c
 
 ### The browser Profile list is empty
 
-Confirm that the browser is installed, then rescan under **Browsers & Profiles / 浏览器与身份**. If a browser exposes no Profiles, Link Helm provides a **Default** identity that opens links using that browser's own default behavior; it does not create a browser Profile.
+Confirm that the browser is installed, then rescan under **Browsers & Profiles**. If a browser exposes no Profiles, Link Helm provides a **Default** identity that opens links using that browser's own default behavior; it does not create a browser Profile.
 
 ### External links do not reach Link Helm
 
